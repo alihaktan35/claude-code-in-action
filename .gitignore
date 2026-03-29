@@ -140,3 +140,6 @@ vite.config.ts.timestamp-*
 
 # Prisma generated files
 /src/generated/prisma/
+
+# Mac system files
+.DS_Store
