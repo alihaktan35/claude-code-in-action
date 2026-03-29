@@ -46,7 +46,7 @@ JWT via `jose`, stored in `auth-token` cookie (7-day sessions). Anonymous users 
 ### Data Model
 - **User** → has many **Project**
 - **Project** stores `messages` (JSON string) and `data` (JSON string of the virtual FS)
-- SQLite via Prisma; schema at `prisma/schema.prisma`
+- SQLite via Prisma; schema defined in `prisma/schema.prisma` — always reference that file directly for current model definitions
 
 ### Frontend Layout (`src/app/main-content.tsx`)
 Three-panel resizable layout: Chat (left) | Editor/Preview (right). The right panel switches between Preview (live Babel transpilation) and Code (Monaco editor + file tree) via tabs.
