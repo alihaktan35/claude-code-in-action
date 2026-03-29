@@ -76,17 +76,32 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
                             );
                           case "tool-invocation":
                             const tool = part.toolInvocation;
+                            const getToolLabel = (toolName: string, args: Record<string, string>, done: boolean) => {
+                              const filename = args.path?.split("/").pop() ?? args.path ?? "";
+                              if (toolName === "str_replace_editor") {
+                                if (args.command === "create") return done ? `Created ${filename}` : `Creating ${filename}…`;
+                                if (args.command === "str_replace" || args.command === "insert") return done ? `Updated ${filename}` : `Updating ${filename}…`;
+                                if (args.command === "view") return done ? `Read ${filename}` : `Reading ${filename}…`;
+                              }
+                              if (toolName === "file_manager") {
+                                if (args.command === "delete") return done ? `Deleted ${filename}` : `Deleting ${filename}…`;
+                                if (args.command === "rename") return done ? `Renamed ${filename}` : `Renaming ${filename}…`;
+                              }
+                              return done ? "Done" : "Working…";
+                            };
+                            const isDone = tool.state === "result" && !!tool.result;
+                            const label = getToolLabel(tool.toolName, (tool.args ?? {}) as Record<string, string>, isDone);
                             return (
-                              <div key={partIndex} className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 bg-neutral-50 rounded-lg text-xs font-mono border border-neutral-200">
-                                {tool.state === "result" && tool.result ? (
+                              <div key={partIndex} className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 bg-neutral-50 rounded-lg text-xs border border-neutral-200">
+                                {isDone ? (
                                   <>
                                     <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                                    <span className="text-neutral-700">{tool.toolName}</span>
+                                    <span className="text-neutral-700">{label}</span>
                                   </>
                                 ) : (
                                   <>
                                     <Loader2 className="w-3 h-3 animate-spin text-blue-600" />
-                                    <span className="text-neutral-700">{tool.toolName}</span>
+                                    <span className="text-neutral-700">{label}</span>
                                   </>
                                 )}
                               </div>
